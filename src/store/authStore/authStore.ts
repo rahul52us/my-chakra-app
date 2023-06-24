@@ -1,18 +1,16 @@
-import axios, { AxiosResponse } from 'axios';
-import { action, makeObservable, observable } from 'mobx';
-
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { action, makeObservable, observable } from "mobx";
 
 interface Notification {
-  // Define the structure of the notification object
-  // You can update it according to your actual notification object properties
+  title?: any;
   message: string;
-  type: string;
-  placement: string;
-  action: any;
+  type?: any;
+  placement?: string;
+  action?: any;
 }
 
 class AuthStore {
-  loading:false;
+  loading: boolean = false;
   user: any | null = null;
   notification: Notification | null = null;
   isRememberCredential = true;
@@ -41,13 +39,21 @@ class AuthStore {
   initiatAppOptions = () => {
     this.loading = true;
     this.setAppAxiosDefaults();
-    let token = localStorage.getItem<any>(process.env.REACT_APP_AUTHORIZATION_TOKEN);
-    if (token && token !== 'undefined') {
-      axios.defaults.headers = {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-      };
-      this.setUserOptions();
+    const authorizationToken = process.env.REACT_APP_AUTHORIZATION_TOKEN;
+    if (authorizationToken) {
+      const token: string | null = localStorage.getItem(authorizationToken);
+      if (token && token !== "undefined") {
+        const headers: AxiosRequestConfig["headers"] = {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        Object.assign(axios.defaults.headers, headers);
+        this.setUserOptions();
+      } else {
+        this.loading = false;
+        this.user = null;
+        this.clearLocalStorage();
+      }
     } else {
       this.loading = false;
       this.user = null;
@@ -57,7 +63,7 @@ class AuthStore {
 
   setUserOptions = () => {
     axios
-      .post('/auth/me')
+      .post("/auth/me")
       .then(({ data }: AxiosResponse<{ data: any }>) => {
         this.user = data.data;
       })
@@ -69,13 +75,15 @@ class AuthStore {
   };
 
   clearLocalStorage = () => {
-    localStorage.removeItem(process.env.REACT_APP_AUTHORIZATION_TOKEN as string);
+    localStorage.removeItem(
+      process.env.REACT_APP_AUTHORIZATION_TOKEN as string
+    );
     localStorage.removeItem(process.env.REACT_APP_WEB_INFO_KEY as string);
   };
 
   updateUserProfile = async (sendData: any) => {
     try {
-      const { data } = await axios.put('/auth/update-profile', sendData);
+      const { data } = await axios.put("/auth/update-profile", sendData);
       this.user = data.data;
       return data;
     } catch (err: any) {
@@ -83,18 +91,27 @@ class AuthStore {
     }
   };
 
-  login = async (sendData: { remember_me: boolean; username: string; password: string }) => {
+  login = async (sendData: {
+    remember_me: boolean;
+    username: string;
+    password: string;
+  }) => {
     try {
       this.isRememberCredential = sendData.remember_me;
-      const { data } = await axios.post<{ data: any }>('/auth/login', {
+      const { data } = await axios.post<{ data: any }>("/auth/login", {
         username: sendData.username,
         password: sendData.password,
       });
       this.user = data.data;
-      axios.defaults.headers = {
-        Accept: 'application/json',
+      const headersToUpdate = {
+        Accept: "application/json",
         Authorization: `Bearer ${data.data.authorizationToken}`,
       };
+      axios.defaults.headers = Object.assign(
+        {},
+        axios.defaults.headers,
+        headersToUpdate
+      );
       localStorage.setItem(
         process.env.REACT_APP_AUTHORIZATION_TOKEN as string,
         data.data.authorizationToken
@@ -115,15 +132,17 @@ class AuthStore {
   };
 
   openNotification = (data: {
+    title: any;
     message: string;
     type?: string;
     placement?: string;
     action?: any;
   }) => {
     this.notification = {
+      title: data.title,
       message: data.message,
-      type: data.type ? data.type : 'success',
-      placement: data.placement ? data.placement : 'bottom',
+      type: data.type ? data.type : "success",
+      placement: data.placement ? data.placement : "bottom",
       action: data.action ? data.action : null,
     };
   };
@@ -133,12 +152,12 @@ class AuthStore {
   };
 
   checkPermission = (check: { key: string; value: string }) => {
-    if (this.user?.adminType === 'admin') {
+    if (this.user?.adminType === "admin") {
       return true;
     } else {
       if (this.user?.permission) {
         var status = false;
-        Object.entries(this.user.permission).forEach((item : any) => {
+        Object.entries(this.user.permission).forEach((item: any) => {
           if (item[0] === check?.key) {
             if (item[1][check.value]) {
               status = true;
@@ -154,7 +173,7 @@ class AuthStore {
 
   uploadUserPic = async (sendData: any) => {
     try {
-      const { data } = await axios.post('/auth/upload-pic', sendData);
+      const { data } = await axios.post("/auth/upload-pic", sendData);
       return data;
     } catch (err) {
       return Promise.reject(err);
@@ -163,7 +182,7 @@ class AuthStore {
 
   sendNotification = async (sendData: any) => {
     try {
-      const { data } = await axios.post('/notification/create', sendData);
+      const { data } = await axios.post("/notification/create", sendData);
       return data;
     } catch (err) {
       return Promise.reject(err);

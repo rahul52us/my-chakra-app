@@ -10,9 +10,16 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { observer } from "mobx-react-lite";
+import { Formik, Form, Field } from "formik";
 import CustomInput from "../../../config/component/CustomInput/CustomInput";
+import { LoginValidation } from "../utils/validation";
+import store from "../../../store/store";
 
-const Login = () => {
+const Login = observer(() => {
+  const {
+    auth: { openNotification, login },
+  } = store;
   const navigate = useNavigate();
 
   return (
@@ -35,38 +42,93 @@ const Login = () => {
           boxShadow={"lg"}
           p={8}
         >
-          <Stack spacing={4}>
-            <CustomInput type="email" label="Email" placeholder="Enter the email" required={true} />
-            <CustomInput type="password" label="Password" placeholder="Enter the password" />
-            <Stack spacing={10}>
-              <Stack
-                direction={{ base: "column", sm: "row" }}
-                align={"start"}
-                justify={"space-between"}
-              >
-                <Checkbox>Remember me</Checkbox>
-                <Link
-                  color={"blue.400"}
-                  onClick={() => navigate("/forgot-password")}
-                >
-                  Forgot password?
-                </Link>
-              </Stack>
-              <Button
-                bg={"blue.400"}
-                color={"white"}
-                _hover={{
-                  bg: "blue.500",
-                }}
-              >
-                Sign in
-              </Button>
-            </Stack>
-          </Stack>
+          <Formik
+            initialValues={{
+              username: "",
+              password: "",
+              remember_me: false,
+            }}
+            validationSchema={LoginValidation}
+            onSubmit={(values, { setSubmitting }) => {
+              login(values)
+                .then(() => {
+                  openNotification({
+                    title: "Login Success",
+                    message: "username has been login successFully",
+                    type: "success",
+                  });
+                  navigate('/')
+                })
+                .catch((error: Error) => {
+                  openNotification({
+                    title: "Login Failed",
+                    message: error.message,
+                    type: "error",
+                  });
+                })
+                .finally(() => {
+                  setSubmitting(false);
+                });
+            }}
+          >
+            {({ handleSubmit, handleChange, errors, values, isSubmitting }) => (
+              <Form onSubmit={handleSubmit}>
+                <Stack spacing={4}>
+                  <CustomInput
+                    type="text"
+                    name="username"
+                    label="Email"
+                    placeholder="Enter the email"
+                    required={true}
+                    error={errors.username}
+                    onChange={handleChange}
+                    value={values.username}
+                  />
+                  <CustomInput
+                    type="password"
+                    name="password"
+                    label="Password"
+                    placeholder="Enter the password"
+                    error={errors.password}
+                    onChange={handleChange}
+                    value={values.password}
+                  />
+                  <Stack spacing={10}>
+                    <Stack
+                      direction={{ base: "column", sm: "row" }}
+                      align={"start"}
+                      justify={"space-between"}
+                    >
+                      <Field as={Checkbox} name="remember_me">
+                        Remember me
+                      </Field>
+                      <Link
+                        color={"blue.400"}
+                        onClick={() => navigate("/forgot-password")}
+                      >
+                        Forgot password?
+                      </Link>
+                    </Stack>
+                    <Button
+                      type="submit"
+                      bg={"blue.400"}
+                      color={"white"}
+                      _hover={{
+                        bg: "blue.500",
+                      }}
+                      isLoading={isSubmitting}
+                    >
+                      Sign in
+                    </Button>
+                  </Stack>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
         </Box>
       </Stack>
     </Flex>
   );
-};
+});
 
 export default Login;
