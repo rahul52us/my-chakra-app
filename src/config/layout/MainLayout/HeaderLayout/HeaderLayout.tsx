@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import styled from "styled-components";
 import { LargeScreenHeaderHeight, SmallScreenHeaderHeight } from "../../../constant/variable";
 import { useMediaQuery } from "@chakra-ui/react";
@@ -20,9 +20,9 @@ const HeaderLayout = () => {
       zIndex={99999}
       bgColor={"white"}
     >
-      <Text width={isLargerThan1020 ? "60%" : "90%"}>
+      <Box width={isLargerThan1020 ? "60%" : "90%"}>
         <HeaderLogo />
-      </Text>
+      </Box>
       <HeaderNavbar />
     </HeaderingContainer>
   );
