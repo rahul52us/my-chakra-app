@@ -5,6 +5,7 @@ const Home = lazy(() => import("../pages/main/Home/Home"));
 const About = lazy(() => import("../pages/main/About/About"));
 const Pricing = lazy(() => import("../pages/main/pricing/Pricing"));
 const Testimonial = lazy(() => import("../pages/main/Testimonial/Testimonial"));
+const Contact = lazy(() => import("../pages/main/Contact/Contact"));
 
 // authentication Routes
 const Login = lazy(() => import("../pages/Authentication/Login/Login"));
@@ -38,6 +39,11 @@ export const MainPublicRoutes = [
   {
     element: <Testimonial />,
     path: "/testimonial",
+    publicRoute: true,
+  },
+  {
+    element: <Contact />,
+    path: "/contact",
     publicRoute: true,
   },
 ];

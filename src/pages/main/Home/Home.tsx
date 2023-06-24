@@ -24,6 +24,8 @@ export default function CallToActionWithIllustration() {
             fontWeight={600}
             fontSize={{ base: "3xl", sm: "4xl", md: "6xl" }}
             lineHeight={"110%"}
+            colorScheme="black"
+            color="black.500"
           >
             Meeting scheduling{" "}
             <Text as={"span"} color={"orange.400"}>

@@ -1,6 +1,10 @@
+import { Text, useColorModeValue } from "@chakra-ui/react"
+
 const HeaderNavMenu = () => {
   return (
-    <div>Header</div>
+    <Text color={useColorModeValue('red','gray.900')}>
+      Heading
+    </Text>
   )
 }
 

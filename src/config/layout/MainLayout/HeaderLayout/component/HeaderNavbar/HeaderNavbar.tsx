@@ -1,6 +1,7 @@
 import { Flex, useMediaQuery } from "@chakra-ui/react";
 import HeaderNavMenu from "./element/HeaderNavMenu";
 import { FaBars } from 'react-icons/fa';
+import LanguageSwitcher from "../../../../../component/LanguageSwitcher/LanguageSwitcher";
 
 
 const HeaderNavbar = () => {
@@ -17,8 +18,7 @@ const HeaderNavbar = () => {
         <>
           <HeaderNavMenu />
           <HeaderNavMenu />
-          <HeaderNavMenu />
-          <HeaderNavMenu />
+          <LanguageSwitcher />
         </>
       ) : (
         <FaBars cursor="pointer"/>
