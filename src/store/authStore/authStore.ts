@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { action, makeObservable, observable } from "mobx";
+import CryptoJS from "crypto-js";
 
 interface Notification {
   title?: any;
@@ -29,6 +30,9 @@ class AuthStore {
       updateUserProfile: action,
       uploadUserPic: action,
       sendNotification: action,
+      restoreUser: action,
+      forgotPasswordStore: action,
+      resetPasswordStore: action,
     });
   }
 
@@ -39,9 +43,9 @@ class AuthStore {
   initiatAppOptions = () => {
     this.loading = true;
     this.setAppAxiosDefaults();
-    const authorizationToken = process.env.REACT_APP_AUTHORIZATION_TOKEN;
-    if (authorizationToken) {
-      const token: string | null = localStorage.getItem(authorizationToken);
+    const authorization_token = process.env.REACT_APP_AUTHORIZATION_TOKEN;
+    if (authorization_token) {
+      const token: string | null = localStorage.getItem(authorization_token);
       if (token && token !== "undefined") {
         const headers: AxiosRequestConfig["headers"] = {
           Accept: "application/json",
@@ -78,7 +82,7 @@ class AuthStore {
     localStorage.removeItem(
       process.env.REACT_APP_AUTHORIZATION_TOKEN as string
     );
-    localStorage.removeItem(process.env.REACT_APP_WEB_INFO_KEY as string);
+    localStorage.removeItem("quizUserData");
   };
 
   updateUserProfile = async (sendData: any) => {
@@ -103,9 +107,16 @@ class AuthStore {
         password: sendData.password,
       });
       this.user = data.data;
+      localStorage.setItem(
+        "quizUserData",
+        CryptoJS.AES.encrypt(
+          JSON.stringify(this.user),
+          process.env.REACT_APP_ENCRYPT_SECRET_KEY!
+        ).toString()
+      );
       const headersToUpdate = {
         Accept: "application/json",
-        Authorization: `Bearer ${data.data.authorizationToken}`,
+        Authorization: `Bearer ${data.data.authorization_token}`,
       };
       axios.defaults.headers = Object.assign(
         {},
@@ -114,11 +125,33 @@ class AuthStore {
       );
       localStorage.setItem(
         process.env.REACT_APP_AUTHORIZATION_TOKEN as string,
-        data.data.authorizationToken
+        data.data.authorization_token
       );
       return data.data;
     } catch (err: any) {
-      return Promise.reject(err?.response?.data);
+      return Promise.reject(err?.response?.data || err.message);
+    }
+  };
+
+  restoreUser = () => {
+    const authorization_token = process.env.REACT_APP_AUTHORIZATION_TOKEN;
+    if (authorization_token) {
+      const storedData = localStorage.getItem("quizUserData");
+      if (storedData) {
+        const decryptedBytes = CryptoJS.AES.decrypt(
+          storedData,
+          process.env.REACT_APP_ENCRYPT_SECRET_KEY!
+        );
+        const decryptedData = decryptedBytes.toString(CryptoJS.enc.Utf8);
+        this.user = decryptedData;
+        return true;
+      } else {
+        this.doLogout();
+        return false;
+      }
+    } else {
+      this.doLogout();
+      return false;
     }
   };
 
@@ -129,6 +162,24 @@ class AuthStore {
 
   register = () => {
     console.log(this.user);
+  };
+
+  forgotPasswordStore = async (value: any) => {
+    try {
+      const { data } = await axios.post("/auth/forgot-password", value);
+      return data.data;
+    } catch (err: any) {
+      return Promise.reject(err?.response?.data || err.message);
+    }
+  };
+
+  resetPasswordStore = async (value: any) => {
+    try {
+      const { data } = await axios.post("/auth/reset-password", value);
+      return data.data;
+    } catch (err: any) {
+      return Promise.reject(err?.response?.data || err.message);
+    }
   };
 
   openNotification = (data: {

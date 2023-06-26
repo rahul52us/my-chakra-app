@@ -1,4 +1,5 @@
 import { lazy } from "react";
+import { authentication } from "./constant/routes";
 
 // public Routes
 const Home = lazy(() => import("../pages/main/Home/Home"));
@@ -15,7 +16,7 @@ const Register = lazy(
 const ForgotPassword = lazy(
   () => import("../pages/Authentication/ForgotPassword/ForgotPassword")
 );
-
+const ResetPassword = lazy(() => import('../pages/Authentication/ResetPassword/ResetPassword'))
 // dashboard Routes
 
 const DashboardIndex = lazy(() => import("../pages/Dashboard/DashboardIndex"));
@@ -51,19 +52,24 @@ export const MainPublicRoutes = [
 export const AuthenticateRoutes = [
   {
     element: <Login />,
-    path: "/login",
+    path: authentication.login,
     publicRoutes: true,
   },
   {
     element: <Register />,
-    path: "/register",
+    path: authentication.register,
     publicRoutes: true,
   },
   {
     element: <ForgotPassword />,
-    path: "/forgot-password",
+    path: authentication.forgotPassword,
     publicRoutes: true,
   },
+  {
+    element : <ResetPassword />,
+    path:authentication.resetPassword,
+    publicRoutes:true
+  }
 ];
 
 export const DashboardRoutes = [

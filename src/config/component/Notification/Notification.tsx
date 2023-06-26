@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 import { observer } from "mobx-react-lite"
-import { useToast } from '@chakra-ui/react'
+import { useToast, ToastPosition } from "@chakra-ui/react";
 import store from '../../../store/store';
 
 const Notification = observer(() => {
@@ -15,6 +15,7 @@ const Notification = observer(() => {
             status: notification.type,
             duration: 9000,
             isClosable: true,
+            position:notification.placement ? notification.placement as ToastPosition : "bottom-right",
           })
 
       setTimeout(() => {

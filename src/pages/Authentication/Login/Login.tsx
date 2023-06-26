@@ -8,6 +8,7 @@ import {
   Heading,
   Text,
   useColorModeValue,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
@@ -15,8 +16,10 @@ import { Formik, Form, Field } from "formik";
 import CustomInput from "../../../config/component/CustomInput/CustomInput";
 import { LoginValidation } from "../utils/validation";
 import store from "../../../store/store";
+import { authentication } from "../../../config/constant/routes";
 
 const Login = observer(() => {
+  const [isBelowMd] = useMediaQuery("(max-width: md)");
   const {
     auth: { openNotification, login },
   } = store;
@@ -29,7 +32,8 @@ const Login = observer(() => {
       justify={"center"}
       bg={useColorModeValue("gray.50", "gray.800")}
     >
-      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
+          <Stack spacing={8} mx="auto" maxW="lg" py={12} px={2} minW={isBelowMd ? "100%" : "30%"}>
+
         <Stack align={"center"}>
           <Heading fontSize={"4xl"}>Sign in to your account</Heading>
           <Text fontSize={"lg"} color={"gray.600"}>
@@ -104,7 +108,7 @@ const Login = observer(() => {
                       </Field>
                       <Link
                         color={"blue.400"}
-                        onClick={() => navigate("/forgot-password")}
+                        onClick={() => navigate(authentication.forgotPassword)}
                       >
                         Forgot password?
                       </Link>
