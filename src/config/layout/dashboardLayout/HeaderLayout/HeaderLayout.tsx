@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import styled from "styled-components";
 import { useMediaQuery } from "@chakra-ui/react";
 import HeaderNavbar from "./component/HeaderNavbar/HeaderNavbar";
@@ -15,9 +15,9 @@ const HeaderLayout = () => {
       height={headerHeight}
       padding={headerPadding}
     >
-      <Text width={isLargerThan1020 ? "60%" : "90%"}>
+      <Box width={isLargerThan1020 ? "40%" : "95%"}>
         <HeaderLogo />
-      </Text>
+      </Box>
       <HeaderNavbar />
     </HeaderingContainer>
   );

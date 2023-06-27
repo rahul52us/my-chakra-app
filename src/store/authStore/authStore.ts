@@ -169,7 +169,7 @@ class AuthStore {
       const { data } = await axios.post("/auth/forgot-password", value);
       return data.data;
     } catch (err: any) {
-      return Promise.reject(err?.response?.data || err.message);
+      return Promise.reject(err?.response?.data || err?.message);
     }
   };
 

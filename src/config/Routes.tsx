@@ -20,6 +20,7 @@ const ResetPassword = lazy(() => import('../pages/Authentication/ResetPassword/R
 // dashboard Routes
 
 const DashboardIndex = lazy(() => import("../pages/Dashboard/DashboardIndex"));
+const QuizDashIndex = lazy(() => import("../pages/Dashboard/quiz/QuizIndex"));
 
 export const MainPublicRoutes = [
   {
@@ -78,4 +79,9 @@ export const DashboardRoutes = [
     path: "/dashboard",
     privateRoutes: true,
   },
+  {
+    element: <QuizDashIndex />,
+    path:'/dashboard/quiz',
+    privateRoutes: true
+  }
 ];

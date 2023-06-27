@@ -1,13 +1,6 @@
 import { extendTheme } from "@chakra-ui/react";
 
 const theme = extendTheme({
-  components: {
-    Toast: {
-      baseStyle: {
-        zIndex: 9999999, // Set the desired z-index value for the toast notifications
-      },
-    },
-  },
   fonts: {
     sizes: {
       xs: "12px",

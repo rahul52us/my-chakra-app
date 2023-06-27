@@ -10,13 +10,14 @@ import { useState } from "react";
 
 interface CustomInputProps {
   type: string;
-  label: string;
+  label?: string;
   placeholder?: string;
   required?: boolean;
   error?: any;
   name: string;
-  onChange: any;
-  value: string;
+  onChange?: any;
+  value?: string;
+  w?:string
 }
 
 const CustomInput = ({
