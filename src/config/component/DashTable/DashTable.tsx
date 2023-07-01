@@ -10,68 +10,111 @@ import {
   Flex,
   Heading,
   Button,
+  Spinner,
+  Center,
 } from "@chakra-ui/react";
-import moment from "moment";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 interface DashTableProps {
   headers: Array<any>;
   rowData: Array<any>;
+  loading?: boolean;
+  deleteAction?: (data: any) => void;
 }
 
-const ExampleTable = ({ headers, rowData }: DashTableProps) => {
+const ExampleTable = ({
+  headers,
+  rowData,
+  loading,
+  deleteAction,
+}: DashTableProps) => {
+  const tableHeadingColor = useColorModeValue(
+    "blackAlpha.200",
+    "blackAlpha.800"
+  );
+  const tdHeight = "40px"; // Set your desired height here
+
   return (
-    <Box borderWidth="1px" borderRadius="md" p={4} overflowX="auto">
+    <Box
+      borderWidth="1px"
+      borderRadius="md"
+      p={4}
+      overflowX="auto"
+      boxShadow={"0 0 5px rgba(0, 0, 0, 0.2)"}
+    >
       <Flex
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         mb={4}
       >
-        <Heading ml={2} fontSize={"lg"}>
+        <Heading ml={2} fontSize="md">
           Quiz Categories
         </Heading>
-        <Button>Create New</Button>
+        <Button fontSize="xs">Create New</Button>
       </Flex>
-      <Table variant="simple" minWidth="max-content" overflowX="scroll">
-        <Thead bgColor={useColorModeValue("blackAlpha.200", "blackAlpha.800")}>
-          <Tr>
-            {headers.map((header, index) => {
-              return <Th key={index}>{header}</Th>;
-            })}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {rowData.map((item, index) => (
-            <Tr key={index}>
-              {headers.map((header, headerIndex) => {
-                if (header === "createdAt") {
-                  return (
-                    <Td key={headerIndex}>
-                      {moment(item[header]).format("DD-MM-YYYY")}
-                    </Td>
-                  );
-                } else if (header === "action") {
-                  return (
-                    <Td key={headerIndex}>
-                      <Flex>
-                        <Box mr={2} color="blue.500" cursor="pointer">
-                          <FaEdit />
-                        </Box>
-                        <Box color="red.500" cursor="pointer">
-                          <FaTrash />
-                        </Box>
-                      </Flex>
-                    </Td>
-                  );
-                } else {
-                  return <Td key={headerIndex}>{item[header]}</Td>;
-                }
+      {loading ? (
+        <Center>
+          <Spinner size="lg" />
+        </Center>
+      ) : (
+        <Table
+          variant="simple"
+          minWidth="max-content"
+          overflowX="scroll"
+          fontSize="small"
+        >
+          <Thead bgColor={tableHeadingColor}>
+            <Tr textAlign="center">
+              {headers.map((header, index) => {
+                return (
+                  <Th key={index} textAlign="center">
+                    {header}
+                  </Th>
+                );
               })}
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {rowData.map((item, index) => (
+              <Tr key={index}>
+                {headers.map((header, headerIndex) => {
+                  if (header === "action") {
+                    return (
+                      <Td key={headerIndex} h={tdHeight}>
+                        <Flex>
+                          <Box mr={2} color="blue.500" cursor="pointer">
+                            <FaEdit />
+                          </Box>
+                          <Box
+                            color="red.500"
+                            cursor="pointer"
+                            onClick={deleteAction?.bind(null, item)}
+                          >
+                            <FaTrash />
+                          </Box>
+                        </Flex>
+                      </Td>
+                    );
+                  } else {
+                    return (
+                      <Td
+                        key={headerIndex}
+                        h={5}
+                        p={0}
+                        pl={5}
+                        textAlign="center"
+                      >
+                        {item[header]}
+                      </Td>
+                    );
+                  }
+                })}
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      )}
     </Box>
   );
 };

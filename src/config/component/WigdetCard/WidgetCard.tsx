@@ -12,7 +12,7 @@ import { BiDotsHorizontal } from "react-icons/bi";
 
 const WidgetCard = () => {
   return (
-    <Card boxShadow={'lg'}>
+    <Card boxShadow={'0 0 5px rgba(0, 0, 0, 0.2)'}>
       <CardHeader>
         <Flex display="flex" justifyContent="space-between">
           <img

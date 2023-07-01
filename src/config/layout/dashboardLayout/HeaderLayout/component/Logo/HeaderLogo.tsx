@@ -1,4 +1,4 @@
-import { Flex, useBreakpointValue } from "@chakra-ui/react";
+import { Flex, IconButton, useBreakpointValue } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import store from "../../../../../../store/store";
@@ -14,25 +14,29 @@ const HeaderLogo = observer(() => {
     <Flex alignItems="center" display={"flex"} ml={2}>
       {isLargerThanXl &&
         (fullScreenMode ? (
-          <BiRightArrowAlt
-            fontSize="36px"
-            cursor="pointer"
-            style={{ marginRight: "1rem", marginTop: "10px" }}
+          <IconButton
+            icon={<BiRightArrowAlt fontSize={25} />}
             onClick={() => fullScreenModeFun(!fullScreenMode)}
+            variant="ghost"
+            size="lg"
+            style={{ marginRight: "1rem", marginTop: "2px" }}
+            aria-label="open the drawer button"
           />
         ) : (
-          <BiLeftArrowAlt
-            fontSize="36px"
-            cursor="pointer"
-            style={{ marginRight: "1rem", marginTop: "10px" }}
+          <IconButton
+            icon={<BiLeftArrowAlt fontSize={25} />}
             onClick={() => fullScreenModeFun(!fullScreenMode)}
+            variant="ghost"
+            size="lg"
+            style={{ marginRight: "1rem", marginTop: "2px" }}
+            aria-label="open the drawer button"
           />
         ))}
       <CustomInput
         type="text"
         name="search"
         placeholder="Search here"
-        w={isLargerThanXl ? '90%' : '95%'}
+        w={isLargerThanXl ? "90%" : "95%"}
       />
     </Flex>
   );

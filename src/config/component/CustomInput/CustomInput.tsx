@@ -9,7 +9,7 @@ import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 import { useState } from "react";
 
 interface CustomInputProps {
-  type: string;
+  type?: string;
   label?: string;
   placeholder?: string;
   required?: boolean;
@@ -28,6 +28,7 @@ const CustomInput = ({
   name,
   value,
   onChange,
+  required,
   ...rest
 }: CustomInputProps) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -48,6 +49,7 @@ const CustomInput = ({
             value={value}
             onChange={onChange}
             name={name}
+            required={required}
             {...rest}
           />
         );

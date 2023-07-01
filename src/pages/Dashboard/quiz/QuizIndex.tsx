@@ -1,8 +1,11 @@
+import QuizCategories from "./component/category/QuizCategories"
 
 const QuizIndex = () => {
   return (
-    <div>QuizIndex</div>
+    <div>
+      <QuizCategories />
+    </div>
   )
 }
 
-export default QuizIndex
+export default QuizIndex;
